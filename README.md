@@ -1,4 +1,4 @@
-# 🍕 RAG Review AI Assistant
+# 🍕 ReviewMind
 
 > **Ask questions about restaurant reviews — answered by a local AI that actually read them.**  
 > A fully offline RAG (Retrieval-Augmented Generation) pipeline powered by LangChain, ChromaDB, and Llama 3.1.
@@ -13,7 +13,7 @@
 
 ## 🧠 What is this?
 
-**RAG Review AI Assistant** is a terminal-based AI chatbot that answers natural language questions about a restaurant using real customer reviews as its knowledge base.
+**ReviewMind** is a terminal-based AI chatbot that answers natural language questions about a restaurant using real customer reviews as its knowledge base.
 
 Instead of fine-tuning a model or hardcoding answers, it uses **Retrieval-Augmented Generation (RAG)** — a technique where relevant reviews are fetched from a vector database and passed as context to a local LLM, which then generates a grounded, accurate response.
 
