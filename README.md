@@ -1,142 +1,181 @@
+# 🍕 RAG Review AI Assistant
 
-# 🤖 Review-QA Assistant – AI-Powered Insight Generator using RAG
+> **Ask questions about restaurant reviews — answered by a local AI that actually read them.**  
+> A fully offline RAG (Retrieval-Augmented Generation) pipeline powered by LangChain, ChromaDB, and Llama 3.1.
 
-An intelligent assistant that answers natural language questions based on real-world reviews using **Retrieval-Augmented Generation (RAG)**. This project is built using **LangChain**, **Ollama**, and **ChromaDB** to provide meaningful, context-rich responses grounded in actual review data.
-
-> 🍕 **Example Use Case**: This demo uses pizza restaurant reviews, but you can replace the dataset with any domain (e.g., product feedback, hotel reviews, course feedback).
-
----
-
-## 🌟 Features
-
-- ⚡️ Answers questions based on context from your own data.
-- 🧠 Uses embeddings to understand and retrieve relevant information.
-- 🔄 Combines retrieval and generation (RAG pipeline).
-- 🔌 Easily replaceable dataset (CSV).
-- 💻 Runs locally using Ollama – no need for cloud LLM APIs.
+![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat&logo=python&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-Framework-1C3C3C?style=flat)
+![Ollama](https://img.shields.io/badge/Ollama-Local%20LLM-black?style=flat)
+![ChromaDB](https://img.shields.io/badge/ChromaDB-Vector%20Store-orange?style=flat)
+![License](https://img.shields.io/badge/License-MIT-blue?style=flat)
 
 ---
 
-## 🧱 Tech Stack
+## 🧠 What is this?
 
-- **[LangChain](https://www.langchain.com/)** – LLM orchestration framework.
-- **[Ollama](https://ollama.com/)** – Local LLM runtime with support for various models.
-- **[ChromaDB](https://www.trychroma.com/)** – Vector database for storing and retrieving embeddings.
-- **Pandas** – Data preprocessing and manipulation.
-- **Python** – Core language for backend logic.
+**RAG Review AI Assistant** is a terminal-based AI chatbot that answers natural language questions about a restaurant using real customer reviews as its knowledge base.
+
+Instead of fine-tuning a model or hardcoding answers, it uses **Retrieval-Augmented Generation (RAG)** — a technique where relevant reviews are fetched from a vector database and passed as context to a local LLM, which then generates a grounded, accurate response.
+
+Everything runs **100% locally** — no OpenAI API key, no internet, no cost.
 
 ---
 
-## 📁 Project Structure
+## ✨ Features
+
+- 💬 **Natural language Q&A** — ask anything: *"Is the pizza good?"*, *"How's the service?"*, *"What do people say about delivery?"*
+- 🔍 **Semantic search** — retrieves the most relevant reviews using vector similarity, not keyword matching
+- 🦙 **Llama 3.1 powered** — runs the Llama 3.1 LLM locally via Ollama
+- 🗄️ **Persistent vector store** — ChromaDB saves embeddings to disk so you only embed once
+- 📊 **Review metadata** — each retrieved review carries its rating and date
+- 🔒 **Fully offline** — zero external API calls, all models run on your machine
+
+---
+
+## 🛠️ Tech Stack
+
+| Component | Technology |
+|---|---|
+| **LLM** | Llama 3.1 (via Ollama) |
+| **Embeddings** | mxbai-embed-large (via Ollama) |
+| **RAG Framework** | LangChain |
+| **Vector Store** | ChromaDB (persistent, local) |
+| **Data** | Pandas (CSV ingestion) |
+| **Interface** | Terminal / CLI |
+
+---
+
+## 🔬 How It Works
 
 ```
-.
-├── main.py                          # Main interface – asks questions via CLI
-├── vector.py                        # Sets up vector store from CSV data
-├── realistic_restaurant_reviews.csv # Example dataset: Pizza reviews
-├── requirements.txt                 # Required Python packages
+realistic_restaurant_reviews.csv
+        │
+        ▼
+  Pandas loads reviews
+  (Title + Review text, Rating, Date)
+        │
+        ▼
+  Ollama embeds each review
+  using mxbai-embed-large
+        │
+        ▼
+  ChromaDB stores vectors
+  persistently on disk
+        │
+        ▼
+  User asks a question (CLI)
+        │
+        ▼
+  ChromaDB retrieves Top-5
+  most semantically similar reviews
+        │
+        ▼
+  LangChain passes reviews + question
+  to Llama 3.1 via prompt template
+        │
+        ▼
+  Llama 3.1 generates a
+  context-grounded answer
 ```
 
 ---
 
 ## 🚀 Getting Started
 
-### ✅ Prerequisites
+### Prerequisites
 
-- Python 3.8+
-- [Ollama](https://ollama.com) installed locally
-- Git
+- Python 3.9+
+- [Ollama](https://ollama.com) installed and running
 
-Ensure Ollama is running, and these models are available:
-
-- `llama3.1` – For answering questions
-- `mxbai-embed-large` – For embedding reviews
-
-> 📌 You can download them using:
-> ```bash
-> ollama run llama3
-> ollama run mxbai-embed-large
-> ```
-
----
-
-### 📦 Installation
-
-1. **Clone the repository**
+### 1. Pull the required models via Ollama
 
 ```bash
-git clone https://github.com/yourusername/review-qa-assistant.git
-cd review-qa-assistant
+ollama pull llama3.1
+ollama pull mxbai-embed-large
 ```
 
-2. **Install dependencies**
+### 2. Clone the repository
 
-We recommend using a virtual environment.
+```bash
+git clone https://github.com/Corerishi/RAG-Review-AI-Assistant.git
+cd RAG-Review-AI-Assistant
+```
+
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-### ▶️ Run the Assistant
+### 4. Run the assistant
 
 ```bash
 python main.py
 ```
 
-You'll see a prompt:
+The first run will embed all reviews and build the ChromaDB vector store. Subsequent runs load it from disk instantly.
+
+---
+
+## 💬 Example Usage
 
 ```
-Ask your question (q to quit):
+---------------------------------------
+Ask your question (q to quit): Is the pizza here worth it?
+
+Based on the reviews, customers consistently praise the pizza for its
+crispy crust and generous toppings. Several reviewers mention the
+Margherita and Pepperoni as standout options. A few reviews note
+slightly long wait times during weekends but agree the quality
+makes it worthwhile.
 ```
 
-Type your question based on the review data and get AI-powered responses.
+---
+
+## 📁 Project Structure
+
+```
+RAG-Review-AI-Assistant/
+├── main.py                          # LangChain RAG chain + CLI interface
+├── vector.py                        # ChromaDB vector store setup + embeddings
+├── realistic_restaurant_reviews.csv # Source review dataset
+├── chroma_langchain_db/             # Persistent vector store (auto-created)
+├── requirements.txt
+└── README.md
+```
 
 ---
 
-## 🧪 Sample Questions
+## 📦 Key Dependencies
 
-Try asking:
-
-- "What do people say about the crust?"
-- "Is the restaurant good for families?"
-- "Are customers satisfied with the service?"
-
-You can adapt these to any dataset (e.g., "What do students say about the Python course?" if using course reviews).
-
----
-
-## 🛠️ Customize with Your Own Data
-
-Want to use your own reviews or documents?
-
-1. Replace `realistic_restaurant_reviews.csv` with your dataset.
-2. Ensure the CSV has the following columns:
-   - `Title`
-   - `Review`
-   - Optionally: `Rating`, `Date`
-
-3. On first run, the script will create vector embeddings and save them in a local ChromaDB directory (`./chrome_langchain_db`).
+```
+langchain
+langchain-ollama
+langchain-chroma
+chromadb
+pandas
+```
 
 ---
 
-## ⚙️ Configuration
+## 📚 Concepts Demonstrated
 
-The app uses:
-
-- `llama3.1` via Ollama for LLM
-- `mxbai-embed-large` for embeddings
-- `ChromaDB` to retrieve top 5 relevant documents per question
-
-If needed, you can tweak the prompt or retriever settings inside `main.py` and `vector.py`.
+- **RAG (Retrieval-Augmented Generation)** pipeline from scratch
+- **Vector embeddings** and semantic similarity search
+- **Local LLM inference** with Ollama (no cloud dependency)
+- **Persistent vector stores** with ChromaDB
+- **LangChain** prompt templates and chain composition
 
 ---
 
 ## 👨‍💻 Author
 
-Developed with ❤️ by Rishi Raj
-
-If you like this project, give it a ⭐️ on GitHub and feel free to contribute!
+**Rishi Raj**  
+MCA — CHRIST (Deemed to be University)  
+[LinkedIn](https://linkedin.com/in/rishi-raj-9110a824a) · [GitHub](https://github.com/Corerishi)
 
 ---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
